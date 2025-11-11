@@ -26,13 +26,13 @@ with st.sidebar.expander("Primary Jet Parameters", expanded=True):
     D0 = st.number_input("Primary nozzle diameter $D_0$ (m)", value=11/1000)
     Ry = st.number_input("Vertical resolution $R_y$ (px)", value=1024)
     ds = st.number_input(r"Particle displacement $\delta_s$ (px)", value=16)
-    nu = st.number_input(r"Kinematic viscosity $\nu \rm (m^2/s)$", value=1e-6)
+    nu = st.number_input(r"Kinematic viscosity $\nu \rm (m^2/s)$", value=1e-6, format="%.3g")
 
 if dual_jet:
     with st.sidebar.expander("Secondary Jet Parameters", expanded=True):
         Q1 = st.number_input("Secondary flow rate $Q_1$ (L/min)", value=0.55)
-        D1 = st.number_input("Secondary nozzle diameter $D_1$ (m)", value=1.3/1000)
-        L_I = st.number_input("Horizontal spacing $L_I$ (m)", value=0.05)
+        D1 = st.number_input("Secondary nozzle diameter $D_1$ (m)", value=1.3/1000, format="%.3g")
+        L_I = st.number_input("Horizontal spacing $L_I$ (m)", value=0.05, format="%.3g")
         H_I = st.number_input("Vertical offset $H_I$ (m)", value=0.10)
         x_fov = st.number_input(r"$x_{\rm fov}$ ($D_1$ units)", value=7.5)
 
@@ -49,10 +49,9 @@ if st.button("Compute Setup"):
         generate_report=True
     )
     st.success("Setup computed successfully!")
-
-    st.markdown("<h3 style='color:darkblue'>PIV Parameter Plots</h3>", unsafe_allow_html=True)
     
-    st.subheader("Calculated Parameters")
+    st.markdown("<h3 style='color:darkblue'>Calculated Parameters</h3>", unsafe_allow_html=True)
+    # st.subheader("Calculated Parameters")
     st.table(results)
     
     # --- LaTeX Notes ---
@@ -61,7 +60,7 @@ if st.button("Compute Setup"):
     st.latex(r"\Delta t = \frac{\delta_s H_{\rm fov}}{R_y \cdot U_c}, \quad fps = \frac{1}{\Delta t}")
     
     # --- PIV Plots ---
-    st.subheader("PIV Parameter Plots")
+    st.markdown("<h3 style='color:darkblue'>PIV Parameter Plots</h3>", unsafe_allow_html=True)
     U_c = results['Uc_ref']
 
     ds_range = np.linspace(ds*0.5, ds*2, 50)  # vary displacement
