@@ -35,7 +35,7 @@ if dual_jet:
         x_fov = st.number_input(r"$x_{\rm fov}$ ($D_1$ units)", value=7.5)
 
 if st.button("Compute Setup"):
-    results = calculate_camera_recording(
+    results, summary = calculate_camera_recording(
         H_fov=H_fov, z_fov=z_fov, Q0=Q0, Ry=Ry, ds=ds, D0=D0, nu=nu,
         dual_jet=dual_jet,
         Q1=Q1 if dual_jet else None,
@@ -47,6 +47,13 @@ if st.button("Compute Setup"):
         generate_report=True
     )
 
+    # Create a download button
+    st.download_button(
+        label="📥 Download Experiment Report",
+        data=summary,  # this can also be bytes or CSV
+        file_name=f"{experiment_name}_report.txt",
+        mime="text/plain"
+    )
     st.success("Setup computed successfully!")
 
     st.markdown("<h3 style='color:darkblue'>PIV Parameter Plots</h3>", unsafe_allow_html=True)

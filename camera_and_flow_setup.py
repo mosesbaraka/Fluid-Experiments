@@ -120,4 +120,4 @@ def calculate_camera_recording(
             "D0/D1": D0_D1, "LI/DI": LI_D1, "HI/D)": HI_D0, "epsilon": eps
         })
 
-    return results
+    return results, summary
