@@ -7,9 +7,11 @@ from camera_and_flow_setup import calculate_camera_recording
 st.title("Dual / Single Jet PIV Setup Calculator")
 
 st.markdown("""
-This tool is designed by Moise Baraka, PhD student at Texas A&M in Dr. Scott Socolofsky's research group.
-This app calculates optimal **camera recording parameters** for single or dual jet PIV experiments.
-It provides **interactive plots** showing particle displacement ($d_s$) vs time interval ($\Delta t$), sampling rate (fps), and flow velocity ($U_c$).
+This tool is designed by *Moise Baraka*, a PhD student at Texas A&M in Dr. Scott Socolofsky's research group.
+To reach out to me, please send me an email at *mbaraka@tamu.edu*.
+
+This app calculates optimal **high-speed camera recording parameters** for single or dual jet PIV experiments.
+It provides **interactive plots** showing particle displacement ($\delta_s$) vs time interval ($\Delta t$), sampling rate (fps), and flow velocity ($U_c$).
 """)
 
 # Sidebar Inputs
@@ -46,14 +48,6 @@ if st.button("Compute Setup"):
         experiment_name=experiment_name,
         generate_report=True
     )
-
-    # Create a download button
-    st.download_button(
-        label="📥 Download Experiment Report",
-        data=summary,  # this can also be bytes or CSV
-        file_name=f"{experiment_name}_report.txt",
-        mime="text/plain"
-    )
     st.success("Setup computed successfully!")
 
     st.markdown("<h3 style='color:darkblue'>PIV Parameter Plots</h3>", unsafe_allow_html=True)
@@ -76,28 +70,39 @@ if st.button("Compute Setup"):
     # 1️d_s vs delta t at given U_c
     # delta_t = ds_range / U_c
     delta_t = ds_range * H_fov / (Ry * U_c)
-    fig1, ax1 = plt.subplots()
+    fig1, ax1 = plt.subplots(figsize=(6,4))
     ax1.plot(ds_range, delta_t, 'b-o')
-    ax1.set_xlabel("$d_s$ (px)"); ax1.set_ylabel(r"$\Delta t$ (s)")
-    ax1.set_title(r"Particle displacement $d_s$ vs Time Interval $\Delta t$")
-    st.pyplot(fig1)
+    ax1.set_xlabel(r"$\delta_s$ (px)"); ax1.set_ylabel(r"$\Delta t$ (s)")
+    ax1.set_title(r"Particle displacement $\delta_s$ vs Time Interval $\Delta t$")
+    ax1.grid(True); st.pyplot(fig1)
     
     # d_s vs fps at given U_c
     fps = 1 / (delta_t)
-    fig2, ax2 = plt.subplots()
+    fig2, ax2 = plt.subplots(figsize=(6,4))
     ax2.plot(ds_range, fps, 'r-o')
     ax2.set_xlabel("$d_s$ (px)"); ax2.set_ylabel(r"$\omega$ (fps)")
-    ax2.set_title(r"Particle displacement $d_s$ vs Sampling Rate (fps)")
-    st.pyplot(fig2)
+    ax2.set_title(r"Particle displacement $\delta_s$ vs Sampling Rate (fps)")
+    ax2.grid(True); st.pyplot(fig2)
     
     # d_s fixed vs U_c
     delta_t_fixed = results['delta_t'] #ds / U_range
     ds = delta_t_fixed * Ry * U_range/ H_fov
-    fig3, ax3 = plt.subplots()
+    fig3, ax3 = plt.subplots(figsize=(6,4))
     ax3.plot(U_range, ds, 'g-', label=rf"$\Delta t = {delta_t_fixed:.3g} s$")
     ax3.set_xlabel("$U_c$ (m/s)"); ax3.set_ylabel(r"$\delta s = \frac{\Delta t\cdot R_y \cdot U_c}{H_{\rm fov}}$")
-    ax3.set_title(r"Particle displacement $d_s$ vs Flow Velocity $U_c$")
-    ax3.legend(); st.pyplot(fig3)
+    ax3.set_title(r"Particle displacement $\delta_s$ vs Flow Velocity $U_c$")
+    ax3.legend(); ax3.grid(True); st.pyplot(fig3)
+
+    # Create a download button
+    st.markdown("""
+    To save the result as a txt file, please click below.
+    """)
+    st.download_button(
+        label="📥 Download Experiment Report",
+        data=summary,  # this can also be bytes or CSV
+        file_name=f"{experiment_name}_report.txt",
+        mime="text/plain"
+    )
 
 
 
